@@ -12,7 +12,7 @@ def get_weather_theme(condition):
     
     # Default Fallback
     css = "background: #050000;"
-    message = "01010100 01001000 01000101 01011001 00100000 01001100 01001001 01000101" # Binary for "THEY LIE"
+    message = "01010100 01001000 01000101 01011001 00100000 01001100 01001001 01000101"
     
     if "thunder" in cond or "storm" in cond:
         css = """
@@ -69,6 +69,7 @@ def get_weather_theme(condition):
 
 # --- APP LOGIC ---
 if not city_data:
+    # No indentation here either!
     st.markdown("<h1 style='color:red; text-align:center; font-family:Courier;'>TRACING IP...</h1>", unsafe_allow_html=True)
 else:
     city = city_data.get('city', 'NOWHERE').upper()
@@ -82,37 +83,35 @@ else:
         cond = data['weather'][0]['description'].upper()
         custom_style, threat_message = get_weather_theme(cond)
 
-        # INJECTING THE FULL SCREEN CSS
-        st.markdown(f"""
-            <style>
-            .stApp {{
-                {custom_style}
-                color: #ff0000 !important;
-                font-family: 'Courier New', monospace;
-            }}
-            .main-text {{
-                font-size: 90px;
-                text-align: center;
-                text-shadow: 5px 5px #330000;
-                margin-top: 50px;
-                font-weight: bold;
-                animation: shake 0.5s infinite;
-            }}
-            @keyframes shake {{
-                0% {{ transform: translate(1px, 1px); }}
-                50% {{ transform: translate(-1px, -1px); }}
-                100% {{ transform: translate(1px, -1px); }}
-            }}
-            </style>
-            <div class="main-text">{city}</div>
-            <h2 style='text-align:center;'>{temp}°C — {cond}</h2>
-        """, unsafe_allow_html=True)
-        
+        # HTML Block with NO leading spaces so Markdown doesn't think it's code
+        html_block = f"""
+<style>
+.stApp {{
+    {custom_style}
+    color: #ff0000 !important;
+    font-family: 'Courier New', monospace;
+}}
+.main-text {{
+    font-size: 90px;
+    text-align: center;
+    text-shadow: 5px 5px #330000;
+    margin-top: 50px;
+    font-weight: bold;
+    animation: shake 0.5s infinite;
+}}
+@keyframes shake {{
+    0% {{ transform: translate(1px, 1px); }}
+    50% {{ transform: translate(-1px, -1px); }}
+    100% {{ transform: translate(1px, -1px); }}
+}}
+</style>
+<div class="main-text">{city}</div>
+<h2 style='text-align:center;'>{temp}°C — {cond}</h2>
+"""
+        st.markdown(html_block, unsafe_allow_html=True)
         st.error(threat_message)
     else:
         st.error("I KNOW YOUR CITY BUT THE API IS LOADING YOU FUCKING DUMBASS.")
 
 st.markdown("---")
-# YOUR NEW CREEPY FOOTER
 st.caption("built by nuri. i see you through your webcam.")
-st.caption("built by nuri. we see everything.")
