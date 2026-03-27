@@ -23,27 +23,23 @@ if not st.session_state['activated']:
     st.markdown("""
         <style>
         .stApp { background-color: #000000; }
-        .enter-btn {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 80vh;
-        }
-        button {
+        .stButton button {
             background-color: transparent !important;
-            color: #333 !important;
+            color: #222 !important;
             border: 1px solid #111 !important;
             font-family: 'Courier New', monospace !important;
-            padding: 10px 20px !important;
+            margin-top: 300px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
-        button:hover {
-            color: #600 !important;
-            border-color: #600 !important;
+        .stButton button:hover {
+            color: #444 !important;
+            border-color: #222 !important;
         }
         </style>
     """, unsafe_allow_html=True)
     
-    st.write("") # Padding
     if st.button("CLICK TO SEE THE WEATHER"):
         st.session_state['activated'] = True
         st.rerun()
@@ -51,6 +47,7 @@ if not st.session_state['activated']:
 else:
     # THE "SCARY" ACTIVATED SCREEN
     try:
+        # Using the file you uploaded to GitHub
         bin_str = get_base64('images.jpeg')
         st.markdown(f'''
             <style>
@@ -71,7 +68,7 @@ else:
                 z-index: -1;
             }}
             .main-text {{
-                font-size: 100px;
+                font-size: clamp(50px, 10vw, 100px);
                 text-align: center;
                 text-shadow: 0 0 30px #ff0000;
                 margin-top: 50px;
@@ -86,12 +83,12 @@ else:
             </style>
         ''', unsafe_allow_html=True)
     except:
-        st.error("IMAGE FILE MISSING")
+        st.error("THE FACE IS MISSING.")
 
-    # HIDDEN MUSIC PLAYER (Extended Mix)
+    # HIDDEN MUSIC PLAYER - Starts at 28 seconds
     st.markdown(
         """
-        <iframe src="https://www.youtube.com/embed/fHRLoVmPeLU?autoplay=1&loop=1&playlist=fHRLoVmPeLU" 
+        <iframe src="https://www.youtube.com/embed/fHRLoVmPeLU?autoplay=1&start=28&loop=1&playlist=fHRLoVmPeLU" 
         width="0" height="0" frameborder="0" allow="autoplay"></iframe>
         """, 
         unsafe_allow_html=True
@@ -112,4 +109,5 @@ else:
             st.error("I AM BEHIND THE CURTAIN.")
 
     st.markdown("---")
+    # Your custom footer
     st.caption("built by nuri. i see you through your webcam.")
