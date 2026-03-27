@@ -1,77 +1,85 @@
 import streamlit as st
 import requests
-import random
+import streamlit.components.v1 as components
 
-# Setting the vibe
-st.set_page_config(page_title="EYE_OF_RA", page_icon="👁️")
+st.set_page_config(page_title="666", page_icon="👹", layout="centered")
 
-# Schizo/Glitch Styling
+# Schizo/Hell Styling
 st.markdown("""
     <style>
-    .reportview-container { background: #000000; }
-    .glitch {
-        color: #00ff00;
+    body, [data-testid="stAppViewContainer"] {
+        background-color: #000000;
+        color: #ff0000;
         font-family: 'Courier New', Courier, monospace;
-        font-weight: bold;
-        text-shadow: 2px 2px #ff0000;
-        animation: shake 0.2s infinite;
-        font-size: 50px;
-        text-align: center;
     }
-    @keyframes shake {
-        0% { transform: translate(2px, 2px); }
-        50% { transform: translate(-2px, -2px); }
-        100% { transform: translate(1px, -1px); }
+    .glitch {
+        color: #ff0000;
+        font-size: 80px;
+        text-align: center;
+        text-shadow: 5px 5px #550000;
+        animation: freak 0.1s infinite;
+    }
+    @keyframes freak {
+        0% { skew(2deg); opacity: 0.8; }
+        50% { skew(-2deg); opacity: 1; }
+        100% { skew(3deg); opacity: 0.5; }
+    }
+    .stMetric {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid #ff0000;
+        padding: 10px;
     }
     </style>
     """, unsafe_allow_html=True)
 
-def get_visitor_city():
-    try:
-        # Poking the visitor's IP directly
-        res = requests.get('https://ipapi.co/json/', timeout=5)
-        return res.json().get('city', 'THE VOID').upper()
-    except:
-        return "NOWHERE"
+# THE JAVASCRIPT HACK - This grabs the visitor's IP, not the server's.
+# We use a public API called 'ipify' to get the user's real IP first.
+components.html(
+    """
+    <script>
+    fetch('https://ipapi.co/json/')
+      .then(response => response.json())
+      .then(data => {
+        window.parent.postMessage({
+          type: 'streamlit:set_widget_value',
+          data: data.city,
+          key: 'user_city'
+        }, '*');
+      });
+    </script>
+    """,
+    height=0,
+)
 
-# Automatically trigger the hunt
-city = get_visitor_city()
+# Pull the city from the Javascript injection
+city_name = st.session_state.get('user_city', 'SEARCHING...')
 
-def get_weather(city_name):
-    # Your verified API Key
+def get_weather(city):
     API_KEY = "f37ab49ad8ebaac85adbe8bd2d9c9b91"
     
+    if city == "SEARCHING...":
+        st.markdown('<p class="glitch">WE ARE FINDING YOU</p>', unsafe_allow_html=True)
+        return
+
     try:
-        url = f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={API_KEY}&units=metric"
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
         data = requests.get(url).json()
 
         if data.get("cod") == 200:
             temp = round(data['main']['temp'])
-            desc = data['weather'][0]['description'].upper()
+            st.markdown(f'<p class="glitch">{city.upper()}</p>', unsafe_allow_html=True)
             
-            # THE REVEAL
-            st.markdown(f'<p class="glitch">{city_name}</p>', unsafe_allow_html=True)
-            st.write(f"### {temp}°C | {desc}")
-            
-            # Schizo static
-            st.info(random.choice([
-                "THE CODE IS UNDER YOUR SKIN.",
-                "STOP BREATHING SO LOUD.",
-                "I CAN SEE YOU THROUGH THE SCREEN.",
-                "01001000 01000101 01001100 01010000"
-            ]))
+            st.write(f"### {temp}°C | {data['weather'][0]['description'].upper()}")
+            st.error("THEY ARE INSIDE THE WALLS. DON'T LOOK LEFT.")
             
         elif data.get("cod") == 401:
-            # THE SPECIFIC ERROR MESSAGE YOU WANTED
-            st.markdown(f'<p class="glitch">{city_name}</p>', unsafe_allow_html=True)
-            st.error("I KNOW YOUR CITY BUT THE API IS LOADING YOU FUCKING DUMBASS. REFRESH IN 15 MINS.")
-        else:
-            st.error("SYSTEM COLLAPSE. REFRESH OR DIE.")
-            
+            st.markdown(f'<p class="glitch">{city.upper()}</p>', unsafe_allow_html=True)
+            st.error("I KNOW YOUR CITY BUT THE API IS LOADING YOU FUCKING DUMBASS. REFRESH.")
     except:
-        st.error("REALITY.EXE HAS STOPPED WORKING.")
+        st.write("EYES EYES EYES EYES EYES")
 
-get_weather(city)
+get_weather(city_name)
 
-st.divider()
-st.caption("nuri built this f'{(or as they call me nuri)}' built this by python  march 2026")
+# Creepy footer
+st.markdown("---")
+st.caption("built by nuri. i see you through the webcam.")
